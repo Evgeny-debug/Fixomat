@@ -1,393 +1,451 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fixomat — ремонт техніки через поштомат</title>
-<meta name="description" content="Fixomat — ремонт техніки без походів у сервіс. Доставка 0 грн, погодження ціни по відео, брендована упаковка та подарунок.">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ПРО Калькулятор Ремонтов</title>
+    <style>
+        :root {
+            --primary: #007aff;
+            --bg: #f2f2f7;
+            --card-bg: #ffffff;
+            --text-main: #1c1c1e;
+            --text-muted: #8e8e93;
+            --border: #e5e5ea;
+            --success: #34c759;
+            --success-bg: #e4fce9;
+            --partner: #ff9500;
+            --partner-bg: #fff5e5;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-<style>
-:root{
-  --bg:#11151d;
-  --bg-soft:#1a1f2b;
-  --header-bg:rgba(17,21,29,.75);
-  --header-bg-scrolled:rgba(17,21,29,.95);
-  --text:#f4f6fb;
-  --muted:#a6adbb;
-  --accent:#6dffb3;
-  --border:rgba(255,255,255,.08);
-  --radius:20px;
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding: 16px;
+            -webkit-font-smoothing: antialiased;
+        }
 
-/* RESET */
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-  font-family:Inter,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  line-height:1.65;
-  -webkit-font-smoothing:antialiased;
-}
-a{text-decoration:none;color:inherit}
+        .app-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 32px);
+            overflow: hidden;
+        }
 
-/* LAYOUT */
-section{
-  padding:96px 16px;
-  max-width:1200px;
-  margin:auto;
-}
+        .search-container {
+            padding: 16px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 10;
+        }
 
-/* TYPO */
-h1,h2{
-  font-family:"Space Grotesk",sans-serif;
-  letter-spacing:-0.02em;
-}
-h1{
-  font-size:clamp(2.2rem,5vw,3.6rem);
-  line-height:1.15;
-}
-h2{
-  font-size:2.1rem;
-  margin-bottom:28px;
-}
-p{
-  color:var(--muted);
-  max-width:720px;
-}
+        .search-container label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 4px;
+        }
 
-/* BUTTONS */
-.btn{
-  padding:16px 28px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  transition:.25s;
-  display:inline-block;
-  text-align:center;
-}
-.btn.primary{
-  background:var(--accent);
-  color:#000;
-  font-weight:600;
-}
-.btn.secondary:hover{
-  border-color:var(--accent);
-  color:var(--accent);
-}
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background-color: #fafafa;
+            color: var(--text-main);
+            transition: all 0.2s;
+            -webkit-appearance: none;
+        }
 
-/* HEADER */
-.header-wrap{
-  position:fixed;
-  top:0;
-  width:100%;
-  z-index:300;
-  background:var(--header-bg);
-  backdrop-filter:blur(16px);
-  transition:.3s;
-}
-.topbar{
-  text-align:center;
-  font-size:.9rem;
-  color:var(--accent);
-  padding:10px 16px;
-  border-bottom:1px solid var(--border);
-  transition:.4s;
-}
-.header-wrap.scrolled .topbar{
-  opacity:0;
-  height:0;
-  padding:0 16px;
-  border:none;
-}
-.nav{
-  max-width:1200px;
-  margin:auto;
-  padding:16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.logo{font-weight:700;color:var(--accent)}
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+        }
 
-/* BURGER */
-.burger{width:28px;height:20px;cursor:pointer;position:relative}
-.burger span{
-  position:absolute;
-  left:0;width:100%;height:2px;
-  background:#fff;
-  transition:.3s;
-}
-.burger span:nth-child(1){top:0}
-.burger span:nth-child(2){top:9px}
-.burger span:nth-child(3){bottom:0}
-.burger.active span:nth-child(1){transform:rotate(45deg);top:9px}
-.burger.active span:nth-child(2){opacity:0}
-.burger.active span:nth-child(3){transform:rotate(-45deg);bottom:9px}
+        .empty-state {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            text-align: center;
+            color: var(--text-muted);
+        }
 
-/* MENU */
-.menu{
-  position:fixed;
-  inset:0;
-  background:rgba(17,21,29,.98);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transform:translateY(-100%);
-  transition:.4s;
-  z-index:200;
-}
-.menu.active{transform:translateY(0)}
-.menu ul{text-align:center;list-style:none}
-.menu li{margin:14px 0;font-size:1.35rem}
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            fill: var(--border);
+        }
 
-/* HERO */
-.hero{
-  min-height:90vh;
-  display:flex;
-  align-items:center;
-  padding-top:180px;
-}
-.hero p{margin-top:20px;font-size:1.05rem}
-.cta{
-  margin-top:36px;
-  display:flex;
-  gap:14px;
-  flex-wrap:wrap;
-}
+        .empty-state h3 {
+            color: var(--text-main);
+            margin-bottom: 8px;
+            font-size: 20px;
+        }
 
-/* CARDS */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:26px;
-}
-.card{
-  background:var(--bg-soft);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:30px;
-}
+        .table-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            display: none;
+        }
 
-/* STEPS */
-.step{position:relative;padding-top:42px}
-.step-number{
-  position:absolute;
-  top:16px;left:16px;
-  width:30px;height:30px;
-  border-radius:50%;
-  background:var(--accent);
-  color:#000;
-  font-weight:700;
-  font-size:.8rem;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 600px;
+        }
 
-/* MAP */
-.map-box{
-  margin-top:28px;
-  height:280px;
-  border-radius:22px;
-  overflow:hidden;
-  border:1px solid var(--border);
-}
+        thead {
+            position: sticky;
+            top: 0;
+            background: #f9f9f9;
+            box-shadow: 0 1px 0 var(--border);
+            z-index: 5;
+        }
 
-/* SOCIALS */
-.socials{
-  display:flex;
-  gap:26px;
-  margin-top:28px;
-}
-.socials svg{
-  width:26px;height:26px;
-  fill:var(--muted);
-  transition:.25s;
-}
-.socials a:hover svg{fill:var(--accent)}
+        th, td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
 
-/* FOOTER */
-footer{
-  padding:56px 16px;
-  border-top:1px solid var(--border);
-  text-align:center;
-  color:var(--muted);
-  font-size:.9rem;
-}
+        th {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 13px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
 
-/* REVEAL */
-.reveal{
-  opacity:0;
-  transform:translateY(30px);
-  transition:.8s;
-}
-.reveal.visible{
-  opacity:1;
-  transform:none;
-}
+        .model-col { font-weight: 600; font-size: 15px; }
+        .quality-col { color: var(--text-muted); }
+        .price-col { font-weight: 600; white-space: nowrap; }
+        
+        .badge {
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            display: inline-block;
+            white-space: nowrap;
+        }
 
-/* MOBILE */
-@media (max-width:768px){
-  section{padding:72px 16px}
-  h1{font-size:2.1rem}
-  h2{font-size:1.7rem}
-  .cta{flex-direction:column}
-  .btn{width:100%}
-  .grid{grid-template-columns:1fr}
-  .map-box{height:240px}
-  .socials{justify-content:center}
-}
-</style>
+        .profit-badge {
+            background-color: var(--success-bg);
+            color: var(--success);
+        }
+
+        .partner-badge {
+            background-color: var(--partner-bg);
+            color: var(--partner);
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="header-wrap" id="headerWrap">
-  <div class="topbar">🚚 Доставка 0 грн в обидві сторони через поштомати</div>
-  <div class="nav">
-    <div class="logo">Fixomat</div>
-    <div class="burger" id="burger"><span></span><span></span><span></span></div>
-  </div>
+<div class="app-container">
+    <div class="search-container">
+        <label for="searchInput">Глобальный поиск</label>
+        <input type="text" id="searchInput" placeholder="Напр: замена экрана айфон 16 про макс ориг" autocomplete="off">
+    </div>
+
+    <div class="empty-state" id="emptyState">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <h3>Ожидание запроса</h3>
+        <p>Введите бренд, модель и неисправность.<br>Система исправит опечатки автоматически.</p>
+    </div>
+
+    <div class="table-wrapper" id="tableContainer">
+        <table>
+            <thead>
+                <tr>
+                    <th>Устройство</th>
+                    <th>Услуга</th>
+                    <th>Качество</th>
+                    <th>Клиенту</th>
+                    <th>Общ. Маржа</th>
+                    <th>Доля партнера (50%)</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+    </div>
 </div>
 
-<nav class="menu" id="menu">
-<ul>
-  <li><a href="#steps">Як це працює</a></li>
-  <li><a href="#map">Поштомат поруч</a></li>
-  <li><a href="#discounts">Знижки</a></li>
-  <li><a href="#vip">VIP</a></li>
-  <li><a href="#schedule">Графік роботи</a></li>
-  <li><a href="#about">Про нас</a></li>
-  <li><a href="#contacts">Контакти</a></li>
-</ul>
-</nav>
-
-<main>
-
-<section class="hero reveal">
-  <div>
-    <h1>Ремонт техніки<br>без походів у сервіс</h1>
-    <p>
-      Надішліть відео з проблемою в Telegram — ми погодимо ціну до ремонту.
-      Ви просто користуєтесь поштоматом, а назад отримуєте пристрій
-      у брендованій упаковці з подарунком.
-    </p>
-    <div class="cta">
-      <a href="#steps" class="btn primary">Як це працює</a>
-      <a href="https://t.me/" class="btn secondary">Надіслати відео</a>
-    </div>
-  </div>
-</section>
-
-<section id="steps" class="reveal">
-  <h2>Як це працює</h2>
-  <div class="grid">
-    <div class="card step"><div class="step-number">1</div>Надсилаєте відео з проблемою</div>
-    <div class="card step"><div class="step-number">2</div>Погоджуємо ціну</div>
-    <div class="card step"><div class="step-number">3</div>Відправляєте через поштомат</div>
-    <div class="card step"><div class="step-number">4</div>Отримуєте з подарунком</div>
-  </div>
-</section>
-
-<section id="map" class="reveal">
-  <h2>Поштомати поруч</h2>
-  <div class="map-box">
-    <iframe
-      src="https://www.google.com/maps?q=поштомат+нова+пошта&z=13&output=embed"
-      width="100%" height="100%" style="border:0" loading="lazy">
-    </iframe>
-  </div>
-</section>
-
-<section id="discounts" class="reveal">
-  <h2>Знижки</h2>
-  <div class="grid">
-    <div class="card">−10% за підписку на Telegram</div>
-    <div class="card">−1% за кожного друга (до 50)</div>
-  </div>
-</section>
-
-<section id="vip" class="reveal">
-  <h2>VIP-статус</h2>
-  <p>
-    Запросили <strong>50 друзів</strong>? Лічильник обнуляється,
-    і ви отримуєте <strong>VIP</strong> зі знижкою <strong>−15%</strong> назавжди.
-  </p>
-</section>
-
-<section id="schedule" class="reveal">
-  <h2>Графік роботи</h2>
-  <div class="grid">
-    <div class="card"><strong>Пн–Пт</strong><br>10:00 – 19:00</div>
-    <div class="card"><strong>Сб</strong><br>11:00 – 16:00</div>
-    <div class="card"><strong>Нд</strong><br>Вихідний</div>
-  </div>
-</section>
-
-<section id="about" class="reveal">
-  <h2>Про нас</h2>
-  <p>
-    Fixomat зʼявився з простої ідеї: якщо можна відправити посилку без черг,
-    то чому не можна так само відремонтувати техніку?
-    Ми додали трохи дизайну, сервісу і подарунок — і вийшло це 🙂
-  </p>
-</section>
-
-<section id="contacts" class="reveal">
-  <h2>Контакти</h2>
-  <div class="socials">
-    <!-- Telegram -->
-    <a href="https://t.me/" target="_blank" aria-label="Telegram">
-      <svg viewBox="0 0 24 24"><path d="M9.04 15.44l-.38 5.34c.54 0 .78-.23 1.06-.5l2.54-2.44 5.27 3.86c.97.54 1.66.26 1.92-.9l3.48-16.3c.34-1.57-.57-2.19-1.52-1.82L1.12 9.38c-1.52.6-1.5 1.45-.28 1.82l5.46 1.7L19.6 5.1c.62-.4 1.18-.18.72.23"/></svg>
-    </a>
-    <!-- Instagram -->
-    <a href="https://instagram.com/" target="_blank" aria-label="Instagram">
-      <svg viewBox="0 0 24 24"><path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm5 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4zM17.5 6.2a1.1 1.1 0 1 0 0 2.2 1.1 1.1 0 0 0 0-2.2z"/></svg>
-    </a>
-    <!-- TikTok -->
-    <a href="https://tiktok.com/" target="_blank" aria-label="TikTok">
-      <svg viewBox="0 0 24 24"><path d="M16.7 5.3c-1-.9-1.6-2.2-1.6-3.6h-3.2v13.1c0 1.5-1.2 2.7-2.7 2.7s-2.7-1.2-2.7-2.7 1.2-2.7 2.7-2.7c.3 0 .6.05.9.14V8.9c-.3-.04-.6-.06-.9-.06-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6V9.4c1.2.9 2.7 1.4 4.2 1.4V7.6c-1.3 0-2.6-.5-3.4-1.3z"/></svg>
-    </a>
-  </div>
-</section>
-
-</main>
-
-<footer>© Fixomat — сервіс нового формату</footer>
-
 <script>
-const burger=document.getElementById('burger');
-const menu=document.getElementById('menu');
-const headerWrap=document.getElementById('headerWrap');
+    const DELIVERY_COST = 300; // Доставка туда-обратно
 
-burger.onclick=()=>{
-  burger.classList.toggle('active');
-  menu.classList.toggle('active');
-};
+    // Базовые цены [Цена для клиента, Себестоимость запчасти]
+    const basePrices = {
+        'Дисплей': { 'Оригинал': [9000, 6000], 'Копия': [4500, 2500] },
+        'Аккумулятор': { 'Оригинал': [2500, 1500], 'Копия': [1500, 600] },
+        'Задняя крышка': { 'Оригинал': [3500, 2000], 'Копия': [1800, 700] },
+        'Стекло камеры': { 'Оригинал': [1200, 400], 'Копия': [700, 150] },
+        'Основная камера': { 'Оригинал': [4000, 2800], 'Копия': [2200, 1200] },
+        'Фронтальная камера': { 'Оригинал': [3000, 2000], 'Копия': [1800, 900] },
+        'Разъем зарядки': { 'Оригинал': [2000, 1000], 'Копия': [1200, 400] },
+        'Динамик полифонический': { 'Оригинал': [1800, 900], 'Копия': [1000, 300] },
+        'Слуховой динамик': { 'Оригинал': [1500, 800], 'Копия': [900, 250] },
+        'Кнопки (громкость/вкл)': { 'Оригинал': [1600, 700], 'Копия': [1000, 300] },
+        'Пайка платы (Контроллер)': { 'Оригинал': [4500, 1000], 'Копия': [3000, 1000] } 
+    };
 
-document.querySelectorAll('.menu a').forEach(a=>{
-  a.onclick=()=>{
-    menu.classList.remove('active');
-    burger.classList.remove('active');
-  };
-});
+    // Огромная база моделей с множителями сложности/стоимости
+    const modelsData = [
+        // APPLE (От новых к старым)
+        { brand: 'Apple', model: 'iPhone 17 Pro Max', m: 2.5 }, { brand: 'Apple', model: 'iPhone 17 Pro', m: 2.3 },
+        { brand: 'Apple', model: 'iPhone 17 Plus', m: 2.0 }, { brand: 'Apple', model: 'iPhone 17', m: 1.9 },
+        { brand: 'Apple', model: 'iPhone 16 Pro Max', m: 2.1 }, { brand: 'Apple', model: 'iPhone 16 Pro', m: 1.9 },
+        { brand: 'Apple', model: 'iPhone 16 Plus', m: 1.7 }, { brand: 'Apple', model: 'iPhone 16', m: 1.6 },
+        { brand: 'Apple', model: 'iPhone 15 Pro Max', m: 1.8 }, { brand: 'Apple', model: 'iPhone 15 Pro', m: 1.7 },
+        { brand: 'Apple', model: 'iPhone 15 Plus', m: 1.5 }, { brand: 'Apple', model: 'iPhone 15', m: 1.4 },
+        { brand: 'Apple', model: 'iPhone 14 Pro Max', m: 1.6 }, { brand: 'Apple', model: 'iPhone 14 Pro', m: 1.5 },
+        { brand: 'Apple', model: 'iPhone 14 Plus', m: 1.3 }, { brand: 'Apple', model: 'iPhone 14', m: 1.2 },
+        { brand: 'Apple', model: 'iPhone 13 Pro Max', m: 1.4 }, { brand: 'Apple', model: 'iPhone 13 Pro', m: 1.3 },
+        { brand: 'Apple', model: 'iPhone 13', m: 1.1 }, { brand: 'Apple', model: 'iPhone 13 mini', m: 1.1 },
+        { brand: 'Apple', model: 'iPhone 12 Pro Max', m: 1.2 }, { brand: 'Apple', model: 'iPhone 12 Pro', m: 1.1 },
+        { brand: 'Apple', model: 'iPhone 12', m: 1.0 }, { brand: 'Apple', model: 'iPhone 12 mini', m: 1.0 },
+        { brand: 'Apple', model: 'iPhone 11 Pro Max', m: 1.0 }, { brand: 'Apple', model: 'iPhone 11 Pro', m: 0.9 },
+        { brand: 'Apple', model: 'iPhone 11', m: 0.8 }, { brand: 'Apple', model: 'iPhone XR', m: 0.7 },
+        { brand: 'Apple', model: 'iPhone XS Max', m: 0.8 }, { brand: 'Apple', model: 'iPhone XS', m: 0.7 },
+        { brand: 'Apple', model: 'iPhone X', m: 0.7 }, { brand: 'Apple', model: 'iPhone SE', m: 0.6 },
+        { brand: 'Apple', model: 'iPhone 8 Plus', m: 0.6 }, { brand: 'Apple', model: 'iPhone 8', m: 0.5 },
 
-window.addEventListener('scroll',()=>{
-  headerWrap.classList.toggle('scrolled',window.scrollY>40);
-});
+        // SAMSUNG
+        { brand: 'Samsung', model: 'Galaxy S25 Ultra', m: 2.2 }, { brand: 'Samsung', model: 'Galaxy S25+', m: 2.0 }, { brand: 'Samsung', model: 'Galaxy S25', m: 1.8 },
+        { brand: 'Samsung', model: 'Galaxy S24 Ultra', m: 2.0 }, { brand: 'Samsung', model: 'Galaxy S24+', m: 1.8 }, { brand: 'Samsung', model: 'Galaxy S24', m: 1.6 },
+        { brand: 'Samsung', model: 'Galaxy S23 Ultra', m: 1.8 }, { brand: 'Samsung', model: 'Galaxy S23+', m: 1.6 }, { brand: 'Samsung', model: 'Galaxy S23', m: 1.4 },
+        { brand: 'Samsung', model: 'Galaxy S22 Ultra', m: 1.5 }, { brand: 'Samsung', model: 'Galaxy S22', m: 1.2 },
+        { brand: 'Samsung', model: 'Galaxy S21 Ultra', m: 1.3 }, { brand: 'Samsung', model: 'Galaxy S21', m: 1.0 },
+        { brand: 'Samsung', model: 'Galaxy Fold 6', m: 2.8 }, { brand: 'Samsung', model: 'Galaxy Flip 6', m: 2.4 },
+        { brand: 'Samsung', model: 'Galaxy Fold 5', m: 2.5 }, { brand: 'Samsung', model: 'Galaxy Flip 5', m: 2.1 },
+        { brand: 'Samsung', model: 'Galaxy A55', m: 1.0 }, { brand: 'Samsung', model: 'Galaxy A54', m: 0.9 },
+        { brand: 'Samsung', model: 'Galaxy A35', m: 0.8 }, { brand: 'Samsung', model: 'Galaxy A34', m: 0.7 },
+        { brand: 'Samsung', model: 'Galaxy A24', m: 0.6 }, { brand: 'Samsung', model: 'Galaxy A15', m: 0.5 },
 
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.classList.add('visible');
-      observer.unobserve(e.target);
+        // XIAOMI / REDMI / POCO
+        { brand: 'Xiaomi', model: '14 Ultra', m: 1.9 }, { brand: 'Xiaomi', model: '14 Pro', m: 1.7 }, { brand: 'Xiaomi', model: '14', m: 1.5 },
+        { brand: 'Xiaomi', model: '13 Ultra', m: 1.7 }, { brand: 'Xiaomi', model: '13 Pro', m: 1.5 }, { brand: 'Xiaomi', model: '13', m: 1.3 },
+        { brand: 'Xiaomi', model: '12 Pro', m: 1.3 }, { brand: 'Xiaomi', model: '12', m: 1.1 },
+        { brand: 'Xiaomi', model: 'Redmi Note 13 Pro+', m: 1.1 }, { brand: 'Xiaomi', model: 'Redmi Note 13 Pro', m: 0.9 }, { brand: 'Xiaomi', model: 'Redmi Note 13', m: 0.7 },
+        { brand: 'Xiaomi', model: 'Redmi Note 12 Pro', m: 0.8 }, { brand: 'Xiaomi', model: 'Redmi Note 12', m: 0.6 },
+        { brand: 'Xiaomi', model: 'Redmi Note 11', m: 0.5 }, { brand: 'Xiaomi', model: 'Redmi Note 10', m: 0.4 },
+        { brand: 'Xiaomi', model: 'Poco F6 Pro', m: 1.2 }, { brand: 'Xiaomi', model: 'Poco F6', m: 1.0 },
+        { brand: 'Xiaomi', model: 'Poco X6 Pro', m: 0.9 }, { brand: 'Xiaomi', model: 'Poco X6', m: 0.8 },
+        { brand: 'Xiaomi', model: 'Poco X5 Pro', m: 0.7 }, { brand: 'Xiaomi', model: 'Poco X3 Pro', m: 0.5 },
+
+        // GOOGLE PIXEL
+        { brand: 'Google', model: 'Pixel 9 Pro XL', m: 1.8 }, { brand: 'Google', model: 'Pixel 9 Pro', m: 1.7 }, { brand: 'Google', model: 'Pixel 9', m: 1.5 },
+        { brand: 'Google', model: 'Pixel 8 Pro', m: 1.6 }, { brand: 'Google', model: 'Pixel 8', m: 1.4 }, { brand: 'Google', model: 'Pixel 8a', m: 1.1 },
+        { brand: 'Google', model: 'Pixel 7 Pro', m: 1.4 }, { brand: 'Google', model: 'Pixel 7', m: 1.2 }, { brand: 'Google', model: 'Pixel 7a', m: 1.0 },
+        { brand: 'Google', model: 'Pixel 6 Pro', m: 1.2 }, { brand: 'Google', model: 'Pixel 6', m: 1.0 },
+
+        // ONEPLUS
+        { brand: 'OnePlus', model: '12', m: 1.6 }, { brand: 'OnePlus', model: '12R', m: 1.3 },
+        { brand: 'OnePlus', model: '11', m: 1.4 }, { brand: 'OnePlus', model: '10 Pro', m: 1.2 },
+        { brand: 'OnePlus', model: '9 Pro', m: 1.0 }, { brand: 'OnePlus', model: 'Nord 3', m: 0.9 }
+    ];
+
+    // Огромный словарь синонимов, окончаний и опечаток
+    const dictionary = {
+        // Бренды
+        'айфон': 'iphone', 'айфона': 'iphone', 'айфону': 'iphone', 'айфоном': 'iphone', 'яблоко': 'iphone', 'огрызок': 'iphone',
+        'самсунг': 'samsung', 'самсунга': 'samsung', 'самсунгу': 'samsung', 'гэлакси': 'galaxy', 'галакси': 'galaxy',
+        'сяоми': 'xiaomi', 'ксяоми': 'xiaomi', 'ксиоми': 'xiaomi', 'шаоми': 'xiaomi', 'ми': 'xiaomi',
+        'редми': 'redmi', 'редмик': 'redmi',
+        'поко': 'poco', 'покофон': 'poco',
+        'пиксель': 'pixel', 'пикселя': 'pixel', 'гугл': 'google', 'гугла': 'google',
+        'ванплас': 'oneplus', 'уанплас': 'oneplus', 'плюс': 'plus',
+        
+        // Модели
+        'про': 'pro', 'прошка': 'pro', 'мак': 'max', 'макс': 'max', 'макса': 'max', 
+        'ультра': 'ultra', 'ультру': 'ultra', 'мини': 'mini', 'миник': 'mini', 'фолд': 'fold', 'флип': 'flip',
+        
+        // Детали (Дисплей)
+        'дисплэй': 'дисплей', 'дисплея': 'дисплей', 'дисплэя': 'дисплей', 'дисплею': 'дисплей', 'дисплеем': 'дисплей',
+        'экран': 'дисплей', 'экрана': 'дисплей', 'экрану': 'дисплей', 'экраном': 'дисплей',
+        'модуль': 'дисплей', 'модуля': 'дисплей', 'матрица': 'дисплей', 'матрицы': 'дисплей',
+        
+        // Детали (Аккумулятор)
+        'акб': 'аккумулятор', 'акбшка': 'аккумулятор', 'батарея': 'аккумулятор', 'батареи': 'аккумулятор', 
+        'батарею': 'аккумулятор', 'батареей': 'аккумулятор', 'акум': 'аккумулятор', 'аккум': 'аккумулятор', 
+        'аккумулятора': 'аккумулятор', 'батарейка': 'аккумулятор', 'батарейки': 'аккумулятор',
+
+        // Детали (Крышка)
+        'крышка': 'крышка', 'крышки': 'крышка', 'крышку': 'крышка', 'крышкой': 'крышка',
+        'задней': 'крышка', 'задняя': 'крышка', 'заднюю': 'крышка',
+        'корпус': 'крышка', 'корпуса': 'крышка', 'корпусу': 'крышка', 'панель': 'крышка',
+
+        // Детали (Стекло / Камера)
+        'стекло': 'стекло', 'стекла': 'стекло', 'стеклышко': 'стекло', 'стеклышка': 'стекло', 'стеклу': 'стекло',
+        'камера': 'камера', 'камеры': 'камера', 'камеру': 'камера', 'основная': 'основная', 'основную': 'основная',
+        'фронталка': 'фронтальная', 'фронталки': 'фронтальная', 'передняя': 'фронтальная', 'селфи': 'фронтальная',
+        'глазок': 'стекло', // "глазок камеры" -> "стекло камеры"
+
+        // Детали (Разъемы / Динамики)
+        'гнездо': 'разъем', 'гнезда': 'разъем', 'разьем': 'разъем', 'разьема': 'разъем', 'разъема': 'разъем',
+        'зарядка': 'зарядки', 'зарядки': 'зарядки', 'порт': 'разъем', 'шлейф': 'разъем',
+        'динамик': 'динамик', 'динамика': 'динамик', 'звук': 'динамик', 
+        'слуховой': 'слуховой', 'верхний': 'слуховой', 'ушной': 'слуховой',
+        'полифонический': 'полифонический', 'нижний': 'полифонический',
+        'кнопка': 'кнопки', 'кнопок': 'кнопки', 'включения': 'вкл', 'громкости': 'громкость',
+        'плата': 'платы', 'платы': 'платы', 'пайка': 'пайка', 'контроллер': 'контроллер',
+
+        // Качество
+        'ориг': 'оригинал', 'оригинала': 'оригинал', 'оригинальный': 'оригинал', 'оригинальная': 'оригинал', 'original': 'оригинал',
+        'коп': 'копия', 'копию': 'копия', 'копии': 'копия', 'китай': 'копия', 'китайский': 'копия', 'китайская': 'копия',
+        'аналог': 'копия', 'подделка': 'копия'
+    };
+
+    // Слова-паразиты
+    const ignoreWords = [
+        'замена', 'замены', 'заменить', 'поменять', 'ремонт', 'ремонта', 'починить', 'сделать',
+        'разбил', 'разбился', 'сломал', 'сломался', 'глючит', 'не', 'работает',
+        'на', 'в', 'для', 'у', 'под', 'сколько', 'стоит', 'цена', 'стоимость', 'прайс', 'гривен', 'грн'
+    ];
+
+    // Генерация базы для поиска (Кешируем при загрузке)
+    const database = [];
+    modelsData.forEach(phone => {
+        for (const [repairType, qualities] of Object.entries(basePrices)) {
+            for (const [quality, prices] of Object.entries(qualities)) {
+                
+                const clientPrice = Math.round((prices[0] * phone.m) / 100) * 100;
+                const partCost = Math.round((prices[1] * phone.m) / 100) * 100;
+                
+                // Считаем маржу и делим пополам с партнером
+                const totalProfit = clientPrice - partCost - DELIVERY_COST;
+                const safeProfit = totalProfit > 0 ? totalProfit : 0;
+                const partnerShare = Math.floor(safeProfit / 2); // 50% партнеру
+
+                // Строка для индексации
+                const searchString = `${phone.brand} ${phone.model} ${repairType} ${quality}`.toLowerCase();
+
+                database.push({
+                    brand: phone.brand,
+                    model: phone.model,
+                    repair: repairType,
+                    quality: quality,
+                    clientPrice: clientPrice,
+                    totalProfit: safeProfit,
+                    partnerShare: partnerShare,
+                    searchString: searchString
+                });
+            }
+        }
+    });
+
+    // Функция очистки и разбора запроса
+    function parseQuery(rawQuery) {
+        let query = rawQuery.toLowerCase().replace(/[^a-zа-яё0-9\s]/g, ''); // убираем всё кроме букв и цифр
+        let words = query.split(/\s+/).filter(w => w.length > 0);
+        let searchTerms = [];
+
+        words.forEach(word => {
+            if (ignoreWords.includes(word)) return;
+            let term = dictionary[word] || word;
+            if (!searchTerms.includes(term)) searchTerms.push(term);
+        });
+
+        // Умные склейки сложных деталей из отдельных слов
+        const joinTerms = (arr, term1, term2, result) => {
+            if (arr.includes(term1) && arr.includes(term2)) {
+                arr = arr.filter(t => t !== term1 && t !== term2);
+                arr.push(result);
+            }
+            return arr;
+        };
+
+        searchTerms = joinTerms(searchTerms, 'стекло', 'камера', 'стекло камеры');
+        searchTerms = joinTerms(searchTerms, 'основная', 'камера', 'основная камера');
+        searchTerms = joinTerms(searchTerms, 'фронтальная', 'камера', 'фронтальная камера');
+        searchTerms = joinTerms(searchTerms, 'задняя', 'крышка', 'задняя крышка');
+        searchTerms = joinTerms(searchTerms, 'разъем', 'зарядки', 'разъем зарядки');
+        searchTerms = joinTerms(searchTerms, 'слуховой', 'динамик', 'слуховой динамик');
+        searchTerms = joinTerms(searchTerms, 'полифонический', 'динамик', 'динамик полифонический');
+
+        // Обработка "камера" без уточнения (если человек просто ввел "камера", 
+        // оставим слово "камера", оно найдет и основную, и фронтальную, и стекло)
+        return searchTerms;
     }
-  });
-},{threshold:.15});
 
-document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+    const input = document.getElementById('searchInput');
+    const emptyState = document.getElementById('emptyState');
+    const tableContainer = document.getElementById('tableContainer');
+    const tableBody = document.getElementById('tableBody');
+
+    input.addEventListener('input', function(e) {
+        const query = e.target.value.trim();
+
+        if (query.length < 2) {
+            emptyState.style.display = 'flex';
+            tableContainer.style.display = 'none';
+            emptyState.innerHTML = `
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <h3>Ожидание запроса</h3>
+                <p>Введите бренд, модель и неисправность.<br>Система исправит опечатки автоматически.</p>`;
+            return;
+        }
+
+        const terms = parseQuery(query);
+
+        // Поиск: все слова из обработанного запроса должны быть в строке (AND логика)
+        const results = database.filter(item => {
+            return terms.every(term => item.searchString.includes(term));
+        });
+
+        if (results.length > 0) {
+            emptyState.style.display = 'none';
+            tableContainer.style.display = 'block';
+            tableBody.innerHTML = '';
+
+            // Ограничиваем вывод 100 строками во избежание зависаний браузера на общих запросах
+            const renderData = results.slice(0, 100);
+
+            renderData.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="model-col">${item.brand} ${item.model}</td>
+                    <td>${item.repair}</td>
+                    <td class="quality-col">${item.quality}</td>
+                    <td class="price-col">${item.clientPrice} ₴</td>
+                    <td><span class="badge profit-badge">${item.totalProfit} ₴</span></td>
+                    <td><span class="badge partner-badge">+${item.partnerShare} ₴</span></td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        } else {
+            emptyState.style.display = 'flex';
+            tableContainer.style.display = 'none';
+            emptyState.innerHTML = `
+                <svg style="fill: #ff3b30;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                <h3>Ничего не найдено</h3>
+                <p>Проверьте опечатку или попробуйте написать проще.</p>
+            `;
+        }
+    });
 </script>
-
 </body>
 </html>
